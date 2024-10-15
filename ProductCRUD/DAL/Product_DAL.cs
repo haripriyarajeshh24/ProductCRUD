@@ -11,7 +11,7 @@ namespace ProductCRUD.DAL
 {
     public class Product_DAL
     {
-        //string constring = ConfigurationManager.ConnectionStrings["ProductConnection"].ToString();
+        string constring = ConfigurationManager.ConnectionStrings["ProductConnection"].ToString();
         public List<Product>GetProducts()
         {
             List<Product> productlist = new List<Product>();
@@ -39,6 +39,31 @@ namespace ProductCRUD.DAL
                 }
             }
             return productlist;
+        }
+
+        //insert products
+        public bool InsertProduct(Product product)
+        {
+            int id = 0;
+            using (SqlConnection connection = new SqlConnection(constring))
+            {
+                SqlCommand command = new SqlCommand("InsertProducts", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@ProductID", product.ProductID);
+                command.Parameters.AddWithValue("@ProductName", product.ProductName);
+                command.Parameters.AddWithValue("@Category", product.Category);
+                connection.Open();
+                id = command.ExecuteNonQuery();
+                connection.Close();
+            }
+            if (id >0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProductCRUD.DAL;
+using ProductCRUD.Models;
 
 namespace ProductCRUD.Controllers
 {
@@ -31,18 +32,34 @@ namespace ProductCRUD.Controllers
 
         // POST: Product/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(Product product)
         {
+            bool IsInserted = false;
+
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    IsInserted = product_DAL.InsertProduct(product);
 
+                    if (IsInserted)
+                    {
+                        TempData["SuccessMessage"] = "Product details saved successfully...!";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Unable to save the product deatils.";
+                    }
+                    
+                }
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = ex.Message;
                 return View();
             }
+           
         }
 
         // GET: Product/Edit/5
