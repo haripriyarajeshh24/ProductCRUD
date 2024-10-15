@@ -21,7 +21,22 @@ namespace ProductCRUD.Controllers
         // GET: Product/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var product = product_DAL.GetProductByID(id).FirstOrDefault();
+            try
+            {
+                if (product == null)
+                {
+                    TempData["InfoMessage"] = "Product not available with id " + id.ToString();
+                    return RedirectToAction("Index");
+
+                }
+                return View(product);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return View();
+            }
         }
 
         // GET: Product/Create
@@ -65,21 +80,38 @@ namespace ProductCRUD.Controllers
         // GET: Product/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var product = product_DAL.GetProductByID(id).FirstOrDefault();
+            if (product == null)
+            {
+                TempData["InfoMessage"] = "Product not available with given ID" + id.ToString();
+                return RedirectToAction("Index");
+            }
+            return View(product);
         }
 
         // POST: Product/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [HttpPost, ActionName("Edit")]
+        public ActionResult UpdateProduct(Product product)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                bool IsUpdated = product_DAL.UpdateProduct(product);
+                if (IsUpdated)
+                {
+                    TempData["SuccessMessage"] = "Product details updated successfully...!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Product unable to edit...!";
+                }
             }
-            catch
+            return RedirectToAction("Index"); try
             {
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
                 return View();
             }
         }
@@ -87,21 +119,39 @@ namespace ProductCRUD.Controllers
         // GET: Product/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var product = product_DAL.GetProductByID(id).FirstOrDefault();
+            try
+            {
+                if (product == null)
+                {
+                    TempData["InfoMessage"] = "Product not available";
+                    RedirectToAction("Index");
+                }
+                return View(product);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return View();
+            }
         }
 
         // POST: Product/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmation(int id)
         {
+            string result = product_DAL.DeleteProduct(id);
             try
             {
-                // TODO: Add delete logic here
+                if (result.Contains("deleted"))
+                {
+                    TempData["SuccessMessage"] = "Product deleted successfully...!";
+                }
 
-                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = ex.Message;
                 return View();
             }
         }

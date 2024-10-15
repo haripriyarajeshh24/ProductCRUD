@@ -26,7 +26,7 @@ else if (TempData["ErrorMessage"] != null)
 }
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Product", "Create", null,new {@class = "btn-btn primary" })
 </p>
 <table class="table">
     <tr>
@@ -49,9 +49,9 @@ else if (TempData["ErrorMessage"] != null)
                 @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID })
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new {@class = "btn-btn primary" } ) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProductID }, new { @class = "btn-btn primary" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID }, new { @class = "btn-btn primary" })
             </td>
         </tr>
     }
